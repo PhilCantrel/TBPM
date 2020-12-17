@@ -3,6 +3,7 @@
 
 # reference required gems
 require 'tty-prompt'
+require 'tty-table'
 require 'time'
 # gem setup
 
@@ -10,6 +11,7 @@ $tasks = 0
 $task_hash = Hash.new
 
 module Project
+    @@Ttable
     @@prompt = TTY::Prompt.new
     @@task_no = 0
     
@@ -25,7 +27,28 @@ module Project
     end
 
     def Project.view
-      puts $task_hash
+      to_do = []
+      in_prog = []
+      comp = []
+      $task_hash.each {|key, value|
+      if value[:status] == "To Do"
+        to_do << key
+      elsif value[:status] == "In Progress"
+        in_prog << key
+      else
+        comp << key
+      end
+    }
+    head = ["To Do", "In Progress", "Done"]
+    table_array = Array.new
+    x = [to_do.length, in_prog.length, comp.length]
+    x = x.max
+    for i in 0..x-1 do
+      table_array << [to_do[i], in_prog[i], comp[i]]
+    end
+    view_table = TTY::Table.new(head,table_array)
+    puts "#{$project_name[:title]} - Project Overview"
+    puts view_table.render(:unicode)
     end
 
     def Project.date_view
@@ -86,19 +109,18 @@ module Project
     def Project.select_task
       # Error handling for no tasks
       tasks = Hash.new
-      i = 1
       $task_hash.each_key {|key|
         tasks[key] = key
-        i += 1
       }
-      @@task = @@prompt.select("Select the Task's status", tasks, fliter: true)
+      @@task = @@prompt.select("Select the Task's status", tasks, filter: true)
       puts @@task
-      end
+    end
 
 
     
-    def Project.edit_task()
-      puts "#{task}"
+    def Project.edit_task
+      Project.select_task
+      puts "#{@@task}"
     end
 
     def Project.delete_task
@@ -107,6 +129,10 @@ module Project
       if yn == true
       puts $task_hash.delete(@@task.to_s)
       end
+    end
+
+    def Project.pdf
+      puts "will refer to pdf module which will use prawnpdf gem"
     end
     
 

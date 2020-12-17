@@ -6,7 +6,8 @@ prompt = TTY::Prompt.new
 require_relative './project'
 
 
-puts "\n████████╗██████╗ ██████╗ ███╗   ███╗
+puts "\n
+████████╗██████╗ ██████╗ ███╗   ███╗
 ╚══██╔══╝██╔══██╗██╔══██╗████╗ ████║
    ██║   ██████╔╝██████╔╝██╔████╔██║
    ██║   ██╔══██╗██╔═══╝ ██║╚██╔╝██║
@@ -14,7 +15,7 @@ puts "\n████████╗██████╗ ██████╗ �
    ╚═╝   ╚═════╝ ╚═╝     ╚═╝     ╚═╝
                                     "
 puts "Welcome to Text Based Project Manager!"
-on_start = prompt.select("\nWould you like to load an existing project, or create a new one\n", %w(Load Create))
+on_start = prompt.select("\nWould you like to load an existing project, or create a new one?\n", %w(Load Create))
 if on_start == "Load"
     puts "insert load phase here"
     
@@ -29,13 +30,13 @@ else
             if another_task == true
                 Project.new_task
             end
-            puts $task_hash
         end
     end
 end
 quit_program = false
 while quit_program == false
-    status = prompt.select("#{$project_name[:title]} - Project Menu", per_page: 7) do |menu|
+    # error handling for no project name
+    status = prompt.select("\n#{$project_name[:title]} - Project Menu", per_page: 7) do |menu|
         menu.choice "Project Overview"
         menu.choice "Project Overview With Due Dates"
         menu.choice "Add Task"
@@ -59,5 +60,10 @@ while quit_program == false
         Project.pdf
     else
         quit_program = prompt.yes?("Exit the program?")
+        puts "\n
+┌┬┐┬ ┬┌─┐┌┬┐┌─┐  ┌─┐┬  ┬    ┌─┐┌─┐┬  ┬┌─┌─┐┬
+ │ ├─┤├─┤ │ └─┐  ├─┤│  │    ├┤ │ ││  ├┴┐└─┐│
+ ┴ ┴ ┴┴ ┴ ┴ └─┘  ┴ ┴┴─┘┴─┘  └  └─┘┴─┘┴ ┴└─┘o
+        "
     end
 end
