@@ -82,15 +82,30 @@ module Project
       $task_hash[task_name] = {status: status, description: desc, due: due_date_time, prority: priority, 
       checklist: checklist, tags: tags, comments: comments}
     end
+
+    def Project.select_task
+      # Error handling for no tasks
+      tasks = Hash.new
+      i = 1
+      $task_hash.each_key {|key|
+        tasks[key] = key
+        i += 1
+      }
+      @@task = @@prompt.select("Select the Task's status", tasks, fliter: true)
+      puts @@task
+      end
+
+
     
-    def Project.edit_task(task)
+    def Project.edit_task()
       puts "#{task}"
     end
 
-    def Project.delete_task(task)
-      yn = @@prompt.yes?("Are you sure you wish to delete '#{task}'? (non reversable)")
+    def Project.delete_task
+      Project.select_task
+      yn = @@prompt.yes?("Are you sure you wish to delete '#{@@task}'? (non reversable)")
       if yn == true
-      puts $task_hash.delete(task.to_s)
+      puts $task_hash.delete(@@task.to_s)
       end
     end
     

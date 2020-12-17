@@ -17,36 +17,7 @@ puts "Welcome to Text Based Project Manager!"
 on_start = prompt.select("\nWould you like to load an existing project, or create a new one\n", %w(Load Create))
 if on_start == "Load"
     puts "insert load phase here"
-    quit_program = false
-    while quit_program == false
-        status = prompt.select("#{$project_name} - Project Menu") do |menu|
-            menu.choice "Project Overview"
-            menu.choice "Project Overview With Due Dates"
-            menu.choice "Add Task"
-            menu.choice "Edit Task"
-            menu.choice "Remove Task"
-            menu.choice "Generate PDF"
-            menu.choice "Exit"
-        end
-        if status == "Project Overview"
-            Project.view
-        elsif status == "Project Overview With Due Dates"
-            Project.date_view
-        elsif status == "Add Task"
-            Project.new_task
-        elsif status == "Edit Task"
-            task = prompt.ask("Input the name of the task you wish to edit:")
-            Project.edit_task(task)
-        elsif status == "Remove Task"
-            task = prompt.ask("Input the name of the task you wish to delete:")
-            Project.delete_task(task)
-        elsif
-            status == "Generate PDF"
-            Project.pdf
-        else
-            quit_program = prompt.yes?("Exit the program?")
-        end
-    end
+    
 else
     Project.create
     initial_class = prompt.yes?("Would you like to create your project's first task?")
@@ -60,5 +31,33 @@ else
             end
             puts $task_hash
         end
+    end
+end
+quit_program = false
+while quit_program == false
+    status = prompt.select("#{$project_name[:title]} - Project Menu", per_page: 7) do |menu|
+        menu.choice "Project Overview"
+        menu.choice "Project Overview With Due Dates"
+        menu.choice "Add Task"
+        menu.choice "Edit Task"
+        menu.choice "Remove Task"
+        menu.choice "Generate PDF"
+        menu.choice "Exit"
+    end
+    if status == "Project Overview"
+        Project.view
+    elsif status == "Project Overview With Due Dates"
+        Project.date_view
+    elsif status == "Add Task"
+        Project.new_task
+    elsif status == "Edit Task"
+        Project.edit_task
+    elsif status == "Remove Task"
+        Project.delete_task
+    elsif
+        status == "Generate PDF"
+        Project.pdf
+    else
+        quit_program = prompt.yes?("Exit the program?")
     end
 end
