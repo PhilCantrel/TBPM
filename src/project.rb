@@ -24,7 +24,11 @@ module Project
     def Project.load(filename)
     end
 
-    def Project.view()
+    def Project.view
+      puts $task_hash
+    end
+
+    def Project.date_view
     end
 
     def Project.new_task
@@ -77,7 +81,17 @@ module Project
       end
       $task_hash[task_name] = {status: status, description: desc, due: due_date_time, prority: priority, 
       checklist: checklist, tags: tags, comments: comments}
-      
+    end
+    
+    def Project.edit_task(task)
+      puts "#{task}"
+    end
+
+    def Project.delete_task(task)
+      yn = @@prompt.yes?("Are you sure you wish to delete '#{task}'? (non reversable)")
+      if yn == true
+      puts $task_hash.delete(task.to_s)
+      end
     end
     
 
