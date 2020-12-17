@@ -40,7 +40,7 @@ module Project
         comp << key
       end
     }
-    head = ["To Do", "In Progress", "Done"]
+    head = ["To Do", "In Progress", "Completed"]
     table_array = Array.new
     x = [to_do.length, in_prog.length, comp.length]
     x = x.max
@@ -73,7 +73,7 @@ module Project
       desc = false
       due_date_time = false
       priority = "Normal"
-      checklist = Hash.new
+      checklist = false
       tags = ["default"]
       comments = false
 
@@ -92,6 +92,9 @@ module Project
         priority = @@prompt.select("Set Task Priority", %w(Low Normal High Critical))
       end
       yn = @@prompt.yes?("Add a checklist?")
+      if yn == true
+        checklist = Hash.new
+      end
       while yn == true
         list_item = @@prompt.ask("Input checklist item", validate: /^[\w\-\s]+$/)
         checklist[list_item] = false
@@ -103,10 +106,11 @@ module Project
         comment = @@prompt.multiline("Input Task comment")
         comments[Time.new] = comment
       end
-      $task_hash[task_name] = {status: status, description: desc, due: due_date_time, prority: priority, 
+      $task_hash[task_name] = {status: status, description: desc, due: due_date_time, priority: priority, 
       checklist: checklist, tags: tags, comments: comments}
     end
 
+    # Allows user to select a Task from a list of all tasks
     def Project.select_task
       # Error handling for no tasks
       tasks = Hash.new
@@ -118,14 +122,36 @@ module Project
 
     def Project.view_task
       Project.select_task
-      puts "\n#{$project_name[:title]} | Viewing - #{@@task}"
+      puts Rainbow("\n#{@@task} | #{$project_name[:title]}").underline.red
       puts Rainbow("\nStatus").blue + " - #{$task_hash[@@task][:status]}"
-      puts Rainbow("\nDue Date").blue + " - #{$task_hash[@@task][:due].strftime("%d/%m/%Y")} at #{$task_hash[@@task][:due].strftime("%I:%M %p")}"
-      puts Rainbow("\nDescription:").underline.blue
+      puts Rainbow("\nPriority").blue + " - #{$task_hash[@@task][:priority]}"
+      if $task_hash[@@task][:due] != false
+        puts Rainbow("\nDue Date").blue + " - #{$task_hash[@@task][:due].strftime("%d/%m/%Y")} at #{$task_hash[@@task][:due].strftime("%I:%M %p")}"
+      end
+      if $task_hash[@@task][:description] != false
+        puts Rainbow("\nDescription:").underline.blue
       $task_hash[@@task][:description].each { |line|
         puts "#{line}"
       }
-      puts Rainbow
+      end
+      if $task_hash[@@task][:checklist] != false
+        puts Rainbow("\nChecklist:").underline.blue #turn into table later
+        $task_hash[@@task][:checklist].each { |item, status|
+          puts "#{item} : #{Project.yesno(status)}"
+        }
+      end
+      if $task_hash[@@task][:comments] != false
+        puts Rainbow("\nComments:").blue.underline
+        $task_hash[@@task][:comments].each { |date, comment|
+          puts Rainbow("\n#{date.strftime("%d/%m/%Y")} at #{date.strftime("%I:%M %p")}").underline.green
+          comment.each { |line|
+            puts "#{line}"
+          }
+        }
+        puts "\n"
+      end
+      puts Rainbow("\nTags:").underline.blue
+      $task_hash[@@task][:tags].each {|tag| print"#{tag} "}
     end
     
     def Project.edit_task
@@ -142,6 +168,10 @@ module Project
 
     def Project.pdf
       puts "will refer to pdf module which will use prawnpdf gem"
+    end
+
+    def Project.yesno(boolean)
+      boolean ? 'Yes' : 'No'
     end
     
 
