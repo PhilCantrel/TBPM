@@ -36,11 +36,12 @@ end
 quit_program = false
 while quit_program == false
     # error handling for no project name
-    status = prompt.select("\n#{$project_name[:title]} - Project Menu", per_page: 7) do |menu|
+    status = prompt.select("\n#{$project_name[:title]} - Project Menu", per_page: 7, filter: true) do |menu|
         menu.choice "Project Overview"
         menu.choice "Project Overview With Due Dates"
         menu.choice "Add Task"
         menu.choice "Edit Task"
+        menu.choice "View Task"
         menu.choice "Remove Task"
         menu.choice "Generate PDF"
         menu.choice "Exit"
@@ -53,6 +54,8 @@ while quit_program == false
         Project.new_task
     elsif status == "Edit Task"
         Project.edit_task
+    elsif status == "View Task"
+        Project.view_task
     elsif status == "Remove Task"
         Project.delete_task
     elsif

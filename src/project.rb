@@ -5,6 +5,7 @@
 require 'tty-prompt'
 require 'tty-table'
 require 'time'
+require 'rainbow'
 # gem setup
 
 $tasks = 0
@@ -112,15 +113,23 @@ module Project
       $task_hash.each_key {|key|
         tasks[key] = key
       }
-      @@task = @@prompt.select("Select the Task's status", tasks, filter: true)
-      puts @@task
+      @@task = @@prompt.select("Select a Task", tasks, filter: true, per_page: 10)
     end
 
-
+    def Project.view_task
+      Project.select_task
+      puts "\n#{$project_name[:title]} | Viewing - #{@@task}"
+      puts Rainbow("\nStatus").blue + " - #{$task_hash[@@task][:status]}"
+      puts Rainbow("\nDue Date").blue + " - #{$task_hash[@@task][:due].strftime("%d/%m/%Y")} at #{$task_hash[@@task][:due].strftime("%I:%M %p")}"
+      puts Rainbow("\nDescription:").underline.blue
+      $task_hash[@@task][:description].each { |line|
+        puts "#{line}"
+      }
+      puts Rainbow
+    end
     
     def Project.edit_task
-      Project.select_task
-      puts "#{@@task}"
+      
     end
 
     def Project.delete_task
