@@ -5,7 +5,7 @@ prompt = TTY::Prompt.new
 # referencing required modules
 require_relative './project'
 
-
+system("clear")
 puts "\n
 ████████╗██████╗ ██████╗ ███╗   ███╗
 ╚══██╔══╝██╔══██╗██╔══██╗████╗ ████║
@@ -14,8 +14,8 @@ puts "\n
    ██║   ██████╔╝██║     ██║ ╚═╝ ██║
    ╚═╝   ╚═════╝ ╚═╝     ╚═╝     ╚═╝
                                     "
-puts "Welcome to Text Based Project Manager!"
-on_start = prompt.select("\nWould you like to load an existing project, or create a new one?\n", %w(Load Create))
+puts "Welcome to Terminal Based Project Manager!"
+on_start = prompt.select("\nWould you like to load an existing project, or create a new one?", %w(Load Create))
 if on_start == "Load"
     puts "insert load phase here"
     
@@ -33,15 +33,15 @@ else
         end
     end
 end
-quit_program = false
+quit_program = false 
 while quit_program == false
     # error handling for no project name
     status = prompt.select("\n\n#{$project_name[:title]} - Project Menu", per_page: 7, filter: true) do |menu|
         menu.choice "Project Overview"
         menu.choice "Project Overview With Due Dates"
         menu.choice "Add Task"
-        menu.choice "Edit Task"
         menu.choice "View Task"
+        menu.choice "Edit Task"
         menu.choice "Remove Task"
         menu.choice "Generate PDF"
         menu.choice "Exit"
@@ -58,15 +58,16 @@ while quit_program == false
         Project.view_task
     elsif status == "Remove Task"
         Project.delete_task
-    elsif
-        status == "Generate PDF"
+    elsif status == "Generate PDF"
         Project.pdf
     else
         quit_program = prompt.yes?("Exit the program?")
+        if quit_program == true
         puts "\n
 ┌┬┐┬ ┬┌─┐┌┬┐┌─┐  ┌─┐┬  ┬    ┌─┐┌─┐┬  ┬┌─┌─┐┬
  │ ├─┤├─┤ │ └─┐  ├─┤│  │    ├┤ │ ││  ├┴┐└─┐│
  ┴ ┴ ┴┴ ┴ ┴ └─┘  ┴ ┴┴─┘┴─┘  └  └─┘┴─┘┴ ┴└─┘o
         "
+        end
     end
 end

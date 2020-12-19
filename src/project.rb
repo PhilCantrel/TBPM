@@ -12,7 +12,8 @@ $tasks = 0
 $task_hash = Hash.new
 
 module Project
-    @@Ttable
+  
+    @@no_selection = true
     @@prompt = TTY::Prompt.new
     @@task_no = 0
     
@@ -39,18 +40,20 @@ module Project
       else
         comp << key
       end
-    }
-    head = ["To Do", "In Progress", "Completed"]
-    table_array = Array.new
-    x = [to_do.length, in_prog.length, comp.length]
-    x = x.max
-    for i in 0..x-1 do
-      table_array << [to_do[i], in_prog[i], comp[i]]
-    end
-    view_table = TTY::Table.new(head,table_array)
-    puts "#{$project_name[:title]} - Project Overview"
-    puts view_table.render(:unicode)
-    end
+      }
+      head = ["To Do", "In Progress", "Completed"]
+      table_array = Array.new
+      x = [to_do.length, in_prog.length, comp.length]
+      x = x.max
+      for i in 0..x-1 do
+        table_array << [to_do[i], in_prog[i], comp[i]]
+      end
+      view_table = TTY::Table.new(head,table_array)
+      system("clear")
+      puts Rainbow("#{$project_name[:title]} - Project Overview").underline.red
+      puts"\n"
+      puts view_table.render(:unicode)
+      end
 
     def Project.date_view
     end
@@ -58,7 +61,7 @@ module Project
     def Project.new_task
       
       @@task_no += 1
-
+      system("clear")
       # User input and validation(alphanumeric, underscore, dash & spaces) for task name
       task_name = @@prompt.ask("Enter the task's title", validate: /^[\w\-\s]+$/, default: "Task Number #{@@task_no}")
 
@@ -74,7 +77,7 @@ module Project
       due_date_time = false
       priority = "Normal"
       checklist = false
-      tags = ["default"]
+      tags = ["no tags"]
       comments = false
 
       # Collects Task data via user input
@@ -122,6 +125,7 @@ module Project
 
     def Project.view_task
       Project.select_task
+      system("clear")
       puts Rainbow("\n#{@@task} | #{$project_name[:title]}").underline.red
       puts Rainbow("\nStatus").blue + " - #{$task_hash[@@task][:status]}"
       puts Rainbow("\nPriority").blue + " - #{$task_hash[@@task][:priority]}"
@@ -152,10 +156,52 @@ module Project
       end
       puts Rainbow("\nTags:").underline.blue
       $task_hash[@@task][:tags].each {|tag| print"#{tag} "}
+      #Menu/Edit options
     end
     
     def Project.edit_task
+      if @@no_selection == true
+        Project.select_task
+      end
+      @@back_to_main = false
+      while @@back_to_main == false
+        system("clear")
+        status = @@prompt.select("\n\n#{@@task} - Edit Task", per_page: 7, filter: true) do |menu|
+        menu.choice "Change Title"
+        menu.choice "Change Description"
+        menu.choice "Change Due Date"
+        menu.choice "Change Task Priority"
+        menu.choice "Add or Modify Checklist Item"
+        menu.choice "Add Comment"
+        menu.choice "Add or Delete Tags"
+        menu.choice "Back to Main Menu"
+        end
+        
+        if status == "Change Title"
+            puts "change title"
+        elsif status == "Change Description"
+            puts "change description"
+        elsif status == "Change Due Date"
+            puts "change due date"
+        elsif status == "Change Task Priority"
+            puts "change task priority"
+        elsif status == "Add or Modify Checklist Item"
+            puts "add or modify checklist item"
+        elsif status == "Add Comment"
+          comment = @@prompt.multiline("Input Task comment")
+          $task_hash[@@task][:comments][Time.new] = comment
+        elsif status == "Change Due Date"
+            puts "change due date"
+        else
+          @@back_to_main = true
+        end
+      end
+
       
+
+
+
+
     end
 
     def Project.delete_task
