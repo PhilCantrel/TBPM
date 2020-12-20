@@ -29,11 +29,11 @@ https://ruby-doc.org/stdlib-2.5.3/libdoc/yaml/rdoc/YAML.html - YAML Module
 
 ### What is Terminal Based Project Manager?
 
-TBPM allows users to plan out their projects. It will allow users to create tasks under three default headers: To Do, In Progress and Done. These headers will be customisable and can be expanded on. Tasks are able to be created, deleted, changed from one 'header' to another and have their contents edited. Tasks will have attributes assigned to them such as Title, description, due date, priority, tags, comments and checklist.
+TBPM allows users to plan out their projects. It will allow users to create tasks under three default headers: To Do, In Progress and Done. These headers will be customise-able and can be expanded on. Tasks are able to be created, deleted, changed from one 'header' to another and have their contents edited. Tasks will have attributes assigned to them such as Title, description, due date, priority, tags, comments and checklist.
 
 Users will be able to see a timeline of their project, which will show which tasks need to be done in chronological order. They will be able to select different tasks to see their expanded details.
 
-Users will also be able to generate a PDF containing a full overview of all headers, along with their expanded tasks. This PDF will be customisable (you can show all or some headers and you can collapse or expand tasks).
+Users will also be able to generate a PDF containing a full overview of all headers, along with their expanded tasks. This PDF will be customise-able (you can show all or some headers and you can collapse or expand tasks).
 
 Data will be stored in a YAML file so that all user data is saved between sessions. This will also allow users to transport their projects between computers. Users could potentially store the YAML file on a service like Google Drive or Dropbox and edit it from anywhere they can access a ruby terminal.
 
@@ -80,7 +80,7 @@ $ ruby tbpm.rb pdf CS01A1.yml "In Progess" expanded
 
 **Project Creation**
 
-TBPM includes an in terminal project creation walkthrough. This requests all the needed input to start a project, such as headings, tasks and task details. The user inputs the required information line by line and is asked if they want to include additional information when appropriate. For example, when a user has created a task with a Title, they are asked if they wish to include further information such as a description, due date, priority etc. The project could be as complex or simple as the user wants it to be.
+TBPM includes an in terminal project creation walk-through. This requests all the needed input to start a project, such as headings, tasks and task details. The user inputs the required information line by line and is asked if they want to include additional information when appropriate. For example, when a user has created a task with a Title, they are asked if they wish to include further information such as a description, due date, priority etc. The project could be as complex or simple as the user wants it to be.
 
 A project can include as many headers as desired. Headers can contain as many tasks as desired.
 

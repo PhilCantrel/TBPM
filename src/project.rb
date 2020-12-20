@@ -156,7 +156,7 @@ module Project
       end
       puts Rainbow("\nTags:").underline.blue
       $task_hash[@@task][:tags].each {|tag| print"#{tag} "}
-      #Menu/Edit options
+      #Menu/Edit/Delete/Comment options
     end
     
     def Project.edit_task
@@ -166,8 +166,9 @@ module Project
       @@back_to_main = false
       while @@back_to_main == false
         system("clear")
-        status = @@prompt.select("\n\n#{@@task} - Edit Task", per_page: 7, filter: true) do |menu|
+        status = @@prompt.select("\n\n#{@@task} - Edit Task", per_page: 9, filter: true) do |menu|
         menu.choice "Change Title"
+        menu.choice "Change Status"
         menu.choice "Change Description"
         menu.choice "Change Due Date"
         menu.choice "Change Task Priority"
@@ -178,29 +179,41 @@ module Project
         end
         
         if status == "Change Title"
-            puts "change title"
+          task_name = @@prompt.ask("Enter new task title", validate: /^[\w\-\s]+$/, default: "Task Number #{@@task_no}")
+          $task_hash[task_name] = $task_hash.delete @@task
+          @@task = task_name
+        elsif status == "Change Status"
+          status = @@prompt.select("Select the Task's new status") do |menu|
+            menu.choice "To Do"
+            menu.choice "In Progress"
+            menu.choice "Completed"
+          end
+          $task_hash[@@task][:status] = status
         elsif status == "Change Description"
-            puts "change description"
+          desc = @@prompt.multiline("Enter New Description")
+          $task_hash[@@task][:description] = desc
         elsif status == "Change Due Date"
-            puts "change due date"
+          due_date_time = @@prompt.ask("Enter the task's due date and time eg. January 21st 2021 1pm or DD/MM/YYYY 13:00")
+          due_date_time = Time.parse(due_date_time)
+          $task_hash[@@task][:due] = due_date_time
         elsif status == "Change Task Priority"
-            puts "change task priority"
+          priority = @@prompt.select("Set Task Priority", %w(Low Normal High Critical))
+          $task_hash[@@task][:priority] = priority
         elsif status == "Add or Modify Checklist Item"
-            puts "add or modify checklist item"
+          puts "add or modify"
         elsif status == "Add Comment"
+          if $task_hash[@@task][:comments] == false
+            comments = Hash.new
+            $task_hash[@@task][:comments] = comments
+          end
           comment = @@prompt.multiline("Input Task comment")
           $task_hash[@@task][:comments][Time.new] = comment
-        elsif status == "Change Due Date"
-            puts "change due date"
+        elsif status == "Add or Delete Tags"
+            puts "Add or Delete Tags"
         else
           @@back_to_main = true
         end
       end
-
-      
-
-
-
 
     end
 
