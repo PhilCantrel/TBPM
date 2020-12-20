@@ -175,7 +175,7 @@ module Project
         menu.choice "Change Description"
         menu.choice "Change Due Date"
         menu.choice "Change Task Priority"
-        menu.choice "Add or Modify Checklist Item"
+        menu.choice "Add or Tick Checklist Item"
         menu.choice "Add Comment"
         menu.choice "Add or Delete Tags"
         menu.choice "Back to Main Menu"
@@ -202,8 +202,36 @@ module Project
         elsif status == "Change Task Priority"
           priority = @@prompt.select("Set Task Priority", %w(Low Normal High Critical))
           $task_hash[@@task][:priority] = priority
-        elsif status == "Add or Modify Checklist Item"
-          puts "add or modify"
+        elsif status == "Add or Tick Checklist Item"
+          if $task_hash[@@task][:checklist] != false
+            puts Rainbow("\nChecklist:").underline.blue #turn into table later
+            table_array = Array.new
+            $task_hash[@@task][:checklist].each { |item, status|
+              table_array << [item, Project.yesno(status)]
+            }
+            view_table = TTY::Table.new(["Item", "Done"],table_array)
+            puts view_table.render(:unicode, alignments: [:left, :center])
+          end
+          add_select = @@prompt.select("Add or Select Item", filter: true) do |menu|
+            menu.choice "Add Item"
+            $task_hash[@@task][:checklist].each { |item, status|
+            if status != true
+              menu.choice "Completed #{item}"
+            end
+            }
+          end
+          if add_select == "Add Item"
+
+          end
+          $task_hash[@@task][:checklist].each { |item, status|
+          if status != true
+            case add_select 
+            when "Completed #{item}"
+              $task_hash[@@task][:checklist]["#{item}"] = true
+            end
+          end
+          }
+
         elsif status == "Add Comment"
           if $task_hash[@@task][:comments] == false
             comments = Hash.new
