@@ -120,7 +120,7 @@ The Project overview and Project Tasks will be displayed to the user via plain t
 
 **Simplified Workflow Diagram of App**
 
-![workflow diagram](Resources/TBPM Class Diagram.svg?raw=true)
+![workflow diagram](https://github.com/philthehuman/TBPM/blob/master/Resources/TBPM%20Class%20Diagram.svg)
 
 ### Implementation Plan
 
