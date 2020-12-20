@@ -58,6 +58,7 @@ module Project
       end
 
     def Project.date_view
+      puts "fucntionality not available yet, watch this space!"
     end
 
     # Creates a new Project Task
@@ -134,6 +135,8 @@ module Project
       end
     end
 
+
+    # Selects and displays a task
     def Project.view_task
       begin
       Project.select_task
@@ -141,7 +144,7 @@ module Project
       puts Rainbow("\n#{@@task} | #{$project_name[:title]}").underline.red
       puts Rainbow("\nStatus").blue + " - #{$task_hash[@@task][:status]}"
       puts Rainbow("\nPriority").blue + " - #{$task_hash[@@task][:priority]}"
-      rescue
+      rescue NameError
         puts "You don't have any tasks to view, please create one"
         return "error"
       end
@@ -178,6 +181,7 @@ module Project
       #Menu/Edit/Delete/Comment options
     end
     
+    # Selects a task if one hasn't been selected and allows user to edit task
     def Project.edit_task
       if @@no_selection == true
         Project.select_task
@@ -219,6 +223,10 @@ module Project
           priority = @@prompt.select("Set Task Priority", %w(Low Normal High Critical))
           $task_hash[@@task][:priority] = priority
         elsif status == "Add or Tick Checklist Item"
+          if $task_hash[@@task][:checklist] == false
+            puts "No checklist error - will fix bug, for now add checklist item when creating task"
+            return "No checklist error - will fix bug, for now add checklist item when creating task"
+          end
           back_to_edit = false
           while back_to_edit == false
             system("clear")
@@ -273,18 +281,20 @@ module Project
 
     end
 
+    # Selects and deletes a task
     def Project.delete_task
       Project.select_task
       yn = @@prompt.yes?("Are you sure you wish to delete '#{@@task}'? (non reversable)")
       if yn == true
-      puts $task_hash.delete(@@task.to_s)
+      $task_hash.delete(@@task.to_s)
       end
     end
 
     def Project.pdf
-      puts "will refer to pdf module which will use prawnpdf gem"
+      puts "Functionality not built yet - watch this space!"
     end
 
+    # Converts boolean into a check or cross
     def Project.yesno(boolean)
       checkmark = "\u2713"
       crossmark = "\u2717"

@@ -4,7 +4,7 @@ Terminal Based Project Manager is a powerful, lightweight, easy to use text base
 
 ### Git Repository
 
-Provide a link to your source control repository.
+https://github.com/philthehuman/TBPM
 
 ### Source Attributions
 
@@ -14,11 +14,9 @@ https://github.com/prawnpdf/prawn - PDF Creation
 
 https://github.com/piotrmurach/tty-prompt - Terminal Option Selection
 
-https://github.com/piotrmurach/tty-option - Input Validations
-
 https://github.com/piotrmurach/tty-table - Terminal Tables
 
-https://github.com/fazibear/colorize - Colour Terminal Text
+https://github.com/sickill/rainbow- Colour Terminal Text
 
 https://ruby-doc.org/stdlib-2.5.3/libdoc/yaml/rdoc/YAML.html - YAML Module
 
@@ -102,5 +100,32 @@ The project viewer will also include a filter which allows users to view all tas
 
 **Project PDF generation**
 
-The PDF generation feature allows the user to create a PDF (intended for printing or sharing). The user can filter their project as desired. For example a user can generate a PDF that only contains tasks from the "To Do" header. The user will also be able to decide whether the tasks are displayed as expanded (showing all their attributes), partially expanded (showing only select attributes) or collapsed. A user could also filter the tasks displayed on their generated PDF via tags or priority. The user can also decide what order the Tasks will be displayed, chronologically or priority based. The PDF can also be generated with attributes at launch.
+The PDF generation feature allows the user to create a PDF (intended for printing or sharing). The user can filter their project as desired. For example a user can generate a PDF that only contains tasks from the "To Do" header. The user will also be able to decide whether the tasks are displayed as expanded (showing all their attributes), partially expanded (showing only select attributes) or collapsed. A user could also filter the tasks displayed on their generated PDF via tags or priority. The user can also decide what order the Tasks will be displayed (chronologically or priority based). The PDF can also be generated with attributes at launch.
 
+### UX - How will the user interact with the program?
+
+**Learning the App**
+
+One of the goals of this project is to make the app as intuitive to use as possible. The user should be able to use the program without having to have any outside help. Given the amount of features in the app, a help guide markdown file (user_manual.md) will be included with the program which will walk users though all of the app's features and how to use them. The guide will also include setup instructions, which will guide them through installing ruby and the GEMs required to run the program.
+
+**Interacting with the App**
+
+The user will interact with the program mainly through a series of selection menus. When there are lots of items in the selection menus, a menu search will be enabled which allows the user to shortlist the menu items by typing in letters corresponding to the menu item names.
+
+The user will also be prompted to input information. This information will be validated when needed (using  RegEx) and parsed in the case of Time input.
+
+The Project overview and Project Tasks will be displayed to the user via plain text. This text will be enhanced with the use of unicode tables and text styling (such as text colour and underlines).
+
+### Workflow Diagram
+
+**Simplified Workflow Diagram of App**
+
+![workflow diagram](/home/phil/Dropbox/projects/T1A3/Resources/TBPM Class Diagram.svg)
+
+### Implementation Plan
+
+You can view the Implementation Plan [here](https://trello.com/b/D16Bl7u9/tbpm-app)
+
+### Help Documentation
+
+A document titled user_manual.md is included in the root folder.
