@@ -109,6 +109,10 @@ module Project
         comment = @@prompt.multiline("Input Task comment")
         comments[Time.new] = comment
       end
+      yn = @@prompt.yes?("Add Tags")
+      if yn == true
+        tags = @@prompt.multiline("Input tags separated by a new line (enter/return)")
+      end  
       $task_hash[task_name] = {status: status, description: desc, due: due_date_time, priority: priority, 
       checklist: checklist, tags: tags, comments: comments}
     end
@@ -158,7 +162,7 @@ module Project
         puts "\n"
       end
       puts Rainbow("\nTags:").underline.blue
-      $task_hash[@@task][:tags].each {|tag| print"#{tag} "}
+      $task_hash[@@task][:tags].each {|tag| print"#{tag.chomp} "}
       #Menu/Edit/Delete/Comment options
     end
     
@@ -177,7 +181,7 @@ module Project
         menu.choice "Change Task Priority"
         menu.choice "Add or Tick Checklist Item"
         menu.choice "Add Comment"
-        menu.choice "Add or Delete Tags"
+        menu.choice "Add Tags"
         menu.choice "Back to Main Menu"
         end
         
@@ -203,35 +207,43 @@ module Project
           priority = @@prompt.select("Set Task Priority", %w(Low Normal High Critical))
           $task_hash[@@task][:priority] = priority
         elsif status == "Add or Tick Checklist Item"
-          if $task_hash[@@task][:checklist] != false
-            puts Rainbow("\nChecklist:").underline.blue #turn into table later
-            table_array = Array.new
-            $task_hash[@@task][:checklist].each { |item, status|
-              table_array << [item, Project.yesno(status)]
-            }
-            view_table = TTY::Table.new(["Item", "Done"],table_array)
-            puts view_table.render(:unicode, alignments: [:left, :center])
-          end
-          add_select = @@prompt.select("Add or Select Item", filter: true) do |menu|
-            menu.choice "Add Item"
-            $task_hash[@@task][:checklist].each { |item, status|
-            if status != true
-              menu.choice "Completed #{item}"
+          back_to_edit = false
+          while back_to_edit == false
+            system("clear")
+            if $task_hash[@@task][:checklist] != false
+              puts Rainbow("\nChecklist:").underline.blue #turn into table later
+              table_array = Array.new
+              $task_hash[@@task][:checklist].each { |item, status|
+                table_array << [item, Project.yesno(status)]
+              }
+              view_table = TTY::Table.new(["Item", "Done"],table_array)
+              puts view_table.render(:unicode, alignments: [:left, :center])
             end
+            add_select = @@prompt.select("Add or Select Item", filter: true, per_page: $task_hash[@@task][:checklist].length+2) do |menu|
+              menu.choice "Add Item"
+              $task_hash[@@task][:checklist].each { |item, status|
+              if status != true
+                menu.choice "Completed #{item}"
+              end
+              }
+              menu.choice "Back to Edit"
+            end
+            if add_select == "Add Item"
+              list_item = @@prompt.ask("Input checklist item", validate: /^[\w\-\s]+$/)
+              $task_hash[@@task][:checklist][list_item] = false
+            elsif add_select == "Back to Edit"
+              back_to_edit = true
+            else
+              $task_hash[@@task][:checklist].each { |item, status|
+              if status != true
+                case add_select 
+                when "Completed #{item}"
+                  $task_hash[@@task][:checklist]["#{item}"] = true
+                end
+              end
             }
-          end
-          if add_select == "Add Item"
-
-          end
-          $task_hash[@@task][:checklist].each { |item, status|
-          if status != true
-            case add_select 
-            when "Completed #{item}"
-              $task_hash[@@task][:checklist]["#{item}"] = true
             end
           end
-          }
-
         elsif status == "Add Comment"
           if $task_hash[@@task][:comments] == false
             comments = Hash.new
@@ -239,8 +251,9 @@ module Project
           end
           comment = @@prompt.multiline("Input Task comment")
           $task_hash[@@task][:comments][Time.new] = comment
-        elsif status == "Add or Delete Tags"
-            puts "Add or Delete Tags"
+        elsif status == "Add Tags"
+          tags = @@prompt.multiline("Input tags separated by a new line (enter/return)")
+          $task_hash[@@task][:tags] += tags
         else
           @@back_to_main = true
         end
