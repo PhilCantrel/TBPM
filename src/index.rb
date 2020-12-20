@@ -35,7 +35,7 @@ else
 end
 quit_program = false 
 while quit_program == false
-    # error handling for no project name
+begin   
     status = prompt.select("\n\n#{$project_name[:title]} - Project Menu", per_page: 7, filter: true) do |menu|
         menu.choice "Project Overview"
         menu.choice "Project Overview With Due Dates"
@@ -46,6 +46,9 @@ while quit_program == false
         menu.choice "Generate PDF"
         menu.choice "Exit"
     end
+rescue NoMethodError
+    puts "This feature is unavailable - Please re-start and choose 'create'"
+end
     if status == "Project Overview"
         Project.view
     elsif status == "Project Overview With Due Dates"

@@ -16,7 +16,8 @@ module Project
     @@no_selection = true
     @@prompt = TTY::Prompt.new
     @@task_no = 0
-    
+
+    # Creates a new project    
     def Project.create()
           $project_name = @@prompt.collect do
             key(:filename).ask("Enter your project file name (No spaces or special characters excluding _)", validate: /^\w*$/, default: "untitled_project")
@@ -28,6 +29,7 @@ module Project
     def Project.load(filename)
     end
 
+    # Views whichever project is loaded
     def Project.view
       to_do = []
       in_prog = []
@@ -58,6 +60,7 @@ module Project
     def Project.date_view
     end
 
+    # Creates a new Project Task
     def Project.new_task
       
       @@task_no += 1
@@ -119,20 +122,29 @@ module Project
 
     # Allows user to select a Task from a list of all tasks
     def Project.select_task
-      # Error handling for no tasks
+      begin
       tasks = Hash.new
       $task_hash.each_key {|key|
         tasks[key] = key
       }
       @@task = @@prompt.select("Select a Task", tasks, filter: true, per_page: 10)
+      rescue NoMethodError
+        puts "You do not have any tasks"
+        return "error"
+      end
     end
 
     def Project.view_task
+      begin
       Project.select_task
       system("clear")
       puts Rainbow("\n#{@@task} | #{$project_name[:title]}").underline.red
       puts Rainbow("\nStatus").blue + " - #{$task_hash[@@task][:status]}"
       puts Rainbow("\nPriority").blue + " - #{$task_hash[@@task][:priority]}"
+      rescue
+        puts "You don't have any tasks to view, please create one"
+        return "error"
+      end
       if $task_hash[@@task][:due] != false
         puts Rainbow("\nDue Date").blue + " - #{$task_hash[@@task][:due].strftime("%d/%m/%Y")} at #{$task_hash[@@task][:due].strftime("%I:%M %p")}"
       end
