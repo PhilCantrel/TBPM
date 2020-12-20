@@ -140,9 +140,12 @@ module Project
       end
       if $task_hash[@@task][:checklist] != false
         puts Rainbow("\nChecklist:").underline.blue #turn into table later
+        table_array = Array.new
         $task_hash[@@task][:checklist].each { |item, status|
-          puts "#{item} : #{Project.yesno(status)}"
+          table_array << [item, Project.yesno(status)]
         }
+        view_table = TTY::Table.new(["Item", "Done"],table_array)
+        puts view_table.render(:unicode, alignments: [:left, :center])
       end
       if $task_hash[@@task][:comments] != false
         puts Rainbow("\nComments:").blue.underline
@@ -230,7 +233,10 @@ module Project
     end
 
     def Project.yesno(boolean)
-      boolean ? 'Yes' : 'No'
+      checkmark = "\u2713"
+      crossmark = "\u2717"
+
+      boolean ? checkmark.encode('utf-8') : crossmark.encode('utf-8')
     end
     
 
